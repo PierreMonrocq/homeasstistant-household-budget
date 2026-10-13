@@ -1,0 +1,77 @@
+# Service (action) definitions for the Household Budget integration.
+# Buckets are addressed through the standard target picker: one bucket is one
+# device.
+
+add_expense:
+  target:
+    entity:
+      integration: household_budget
+      domain: sensor
+  fields:
+    amount:
+      required: true
+      example: 42.50
+      selector:
+        number:
+          mode: box
+          step: 0.01
+          min: -1000000
+          max: 1000000
+    date:
+      selector:
+        date:
+    description:
+      selector:
+        text:
+
+edit_expense:
+  target:
+    entity:
+      integration: household_budget
+      domain: sensor
+  fields:
+    expense_id:
+      required: true
+      selector:
+        text:
+    amount:
+      example: 42.50
+      selector:
+        number:
+          mode: box
+          step: 0.01
+          min: -1000000
+          max: 1000000
+    date:
+      selector:
+        date:
+    description:
+      selector:
+        text:
+
+delete_expense:
+  fields:
+    expense_id:
+      required: true
+      selector:
+        text:
+
+list_expenses:
+  target:
+    entity:
+      integration: household_budget
+      domain: sensor
+  fields:
+    date_from:
+      selector:
+        date:
+    date_to:
+      selector:
+        date:
+    limit:
+      default: 50
+      selector:
+        number:
+          mode: box
+          min: 1
+          max: 500

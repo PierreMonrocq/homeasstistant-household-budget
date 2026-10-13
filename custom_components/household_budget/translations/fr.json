@@ -1,0 +1,119 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Créer votre foyer",
+        "description": "Configurez un foyer pour suivre ses dépenses.",
+        "data": {
+          "name": "Nom du foyer",
+          "currency": "Devise"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Un foyer portant ce nom existe déjà."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "remaining": {
+        "name": "Restant"
+      },
+      "spent": {
+        "name": "Dépensé"
+      },
+      "percent_used": {
+        "name": "Utilisé"
+      },
+      "next_release": {
+        "name": "Prochaine libération"
+      }
+    },
+    "number": {
+      "limit": {
+        "name": "Plafond"
+      }
+    }
+  },
+  "services": {
+    "add_expense": {
+      "name": "Ajouter une dépense",
+      "description": "Enregistre une dépense dans une enveloppe. Un montant négatif enregistre un remboursement.",
+      "fields": {
+        "amount": {
+          "name": "Montant",
+          "description": "Le montant dépensé. Utilisez un montant négatif pour un remboursement."
+        },
+        "date": {
+          "name": "Date",
+          "description": "Le jour de la dépense. Aujourd'hui par défaut, et peut être antidatée."
+        },
+        "description": {
+          "name": "Description",
+          "description": "Note facultative, jusqu'à 255 caractères."
+        }
+      }
+    },
+    "edit_expense": {
+      "name": "Modifier une dépense",
+      "description": "Modifie une dépense existante. Cibler une enveloppe y déplace la dépense.",
+      "fields": {
+        "expense_id": {
+          "name": "ID de la dépense",
+          "description": "L'identifiant renvoyé lors de l'ajout de la dépense."
+        },
+        "amount": {
+          "name": "Montant",
+          "description": "Le nouveau montant."
+        },
+        "date": {
+          "name": "Date",
+          "description": "La nouvelle date."
+        },
+        "description": {
+          "name": "Description",
+          "description": "La nouvelle note."
+        }
+      }
+    },
+    "delete_expense": {
+      "name": "Supprimer une dépense",
+      "description": "Supprime une dépense. Les chiffres de l'enveloppe se corrigent immédiatement.",
+      "fields": {
+        "expense_id": {
+          "name": "ID de la dépense",
+          "description": "L'identifiant de la dépense à supprimer."
+        }
+      }
+    },
+    "list_expenses": {
+      "name": "Lister les dépenses",
+      "description": "Renvoie des dépenses sans rien modifier. Couvre toutes les enveloppes si aucune cible n'est donnée.",
+      "fields": {
+        "date_from": {
+          "name": "À partir du",
+          "description": "Uniquement les dépenses à partir de ce jour inclus."
+        },
+        "date_to": {
+          "name": "Jusqu'au",
+          "description": "Uniquement les dépenses jusqu'à ce jour inclus."
+        },
+        "limit": {
+          "name": "Limite",
+          "description": "Nombre maximum de dépenses renvoyées, les plus récentes d'abord."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "no_bucket_target": {
+      "message": "Aucune enveloppe ciblée. Choisissez l'appareil d'une enveloppe ou l'une de ses entités."
+    },
+    "multiple_bucket_targets": {
+      "message": "Cette action ne traite qu'une enveloppe à la fois, mais {buckets} ont été ciblées."
+    },
+    "expense_not_found": {
+      "message": "Aucune dépense avec l'identifiant {expense_id}."
+    }
+  }
+}

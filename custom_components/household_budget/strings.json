@@ -1,0 +1,119 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Create your household",
+        "description": "Set up a household to track its spending.",
+        "data": {
+          "name": "Household name",
+          "currency": "Currency"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "A household with this name already exists."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "remaining": {
+        "name": "Remaining"
+      },
+      "spent": {
+        "name": "Spent"
+      },
+      "percent_used": {
+        "name": "Used"
+      },
+      "next_release": {
+        "name": "Next release"
+      }
+    },
+    "number": {
+      "limit": {
+        "name": "Limit"
+      }
+    }
+  },
+  "services": {
+    "add_expense": {
+      "name": "Add expense",
+      "description": "Records an expense in a bucket. A negative amount records a refund.",
+      "fields": {
+        "amount": {
+          "name": "Amount",
+          "description": "How much was spent. Use a negative amount for a refund."
+        },
+        "date": {
+          "name": "Date",
+          "description": "The day the expense happened. Defaults to today, and may be backdated."
+        },
+        "description": {
+          "name": "Description",
+          "description": "Optional note, up to 255 characters."
+        }
+      }
+    },
+    "edit_expense": {
+      "name": "Edit expense",
+      "description": "Changes an existing expense. Targeting a bucket moves the expense to it.",
+      "fields": {
+        "expense_id": {
+          "name": "Expense ID",
+          "description": "The ID returned when the expense was added."
+        },
+        "amount": {
+          "name": "Amount",
+          "description": "The new amount."
+        },
+        "date": {
+          "name": "Date",
+          "description": "The new date."
+        },
+        "description": {
+          "name": "Description",
+          "description": "The new note."
+        }
+      }
+    },
+    "delete_expense": {
+      "name": "Delete expense",
+      "description": "Deletes an expense. The bucket's figures correct themselves immediately.",
+      "fields": {
+        "expense_id": {
+          "name": "Expense ID",
+          "description": "The ID of the expense to delete."
+        }
+      }
+    },
+    "list_expenses": {
+      "name": "List expenses",
+      "description": "Returns expenses without changing anything. Covers every bucket when no target is given.",
+      "fields": {
+        "date_from": {
+          "name": "From date",
+          "description": "Only expenses on or after this day."
+        },
+        "date_to": {
+          "name": "To date",
+          "description": "Only expenses on or before this day."
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "Maximum number of expenses to return, newest first."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "no_bucket_target": {
+      "message": "No bucket was targeted. Pick a bucket's device or one of its entities."
+    },
+    "multiple_bucket_targets": {
+      "message": "This action works on one bucket at a time, but {buckets} were targeted."
+    },
+    "expense_not_found": {
+      "message": "No expense with ID {expense_id} exists."
+    }
+  }
+}

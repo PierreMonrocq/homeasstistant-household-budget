@@ -1,0 +1,99 @@
+# Example Household Budget dashboard.
+#
+# Managing buckets and recording expenses is the "Gestion du Budget" panel's
+# job. This is the optional extra: the sensors each bucket exposes, laid out
+# next to your other cards.
+#
+# Paste this into a dashboard's raw configuration editor (dashboard -> pencil
+# -> three dots -> "Raw configuration editor"), then fix the two things that
+# depend on your own setup:
+#
+#   * entity ids follow the bucket name: a bucket called "Courses" gives
+#     sensor.courses_remaining / _spent / _used / _next_release and
+#     number.courses_limit. The bucket's device page lists them all.
+#   * REPLACE_WITH_DEVICE_ID: open Settings -> Devices & services -> Devices,
+#     click the bucket, and copy the id from the page URL. The visual editor
+#     fills it in for you if you pick the device from the dropdown instead.
+
+views:
+  - title: Budget
+    path: budget
+    type: sections
+    max_columns: 2
+    sections:
+      # One-tap buttons for amounts you enter all the time. Each one calls
+      # the add_expense action on a bucket's device with a fixed amount.
+      - type: grid
+        cards:
+          - type: heading
+            heading: Raccourcis
+
+          - type: button
+            name: Déjeuner 12 €
+            icon: mdi:food
+            tap_action:
+              action: perform-action
+              perform_action: household_budget.add_expense
+              target:
+                device_id: REPLACE_WITH_DEVICE_ID
+              data:
+                amount: 12
+                description: Déjeuner
+
+          - type: button
+            name: Café 3 €
+            icon: mdi:coffee
+            tap_action:
+              action: perform-action
+              perform_action: household_budget.add_expense
+              target:
+                device_id: REPLACE_WITH_DEVICE_ID
+              data:
+                amount: 3
+                description: Café
+
+      # How full each bucket is. Red past 100 % means the window is overspent.
+      - type: grid
+        cards:
+          - type: heading
+            heading: Enveloppes
+
+          - type: gauge
+            entity: sensor.courses_used
+            name: Courses
+            min: 0
+            max: 100
+            needle: true
+            severity:
+              green: 0
+              yellow: 75
+              red: 100
+
+          - type: tile
+            entity: sensor.courses_remaining
+            name: Restant sur 30 jours
+
+          - type: entities
+            title: Détail
+            entities:
+              - entity: sensor.courses_spent
+                name: Dépensé sur la fenêtre
+              - entity: sensor.courses_remaining
+                name: Restant
+              - entity: sensor.courses_next_release
+                name: Prochaine libération
+              - entity: number.courses_limit
+                name: Plafond
+
+      # The sliding window makes this graph worth having: remaining climbs on
+      # its own as old expenses age out, and drops when you spend.
+      - type: grid
+        cards:
+          - type: heading
+            heading: Historique
+
+          - type: history-graph
+            hours_to_show: 720
+            entities:
+              - entity: sensor.courses_remaining
+                name: Courses

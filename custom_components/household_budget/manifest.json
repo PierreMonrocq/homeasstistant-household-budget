@@ -1,0 +1,14 @@
+{
+  "domain": "household_budget",
+  "name": "Household Budget",
+  "codeowners": ["@pierremonrocq"],
+  "config_flow": true,
+  "after_dependencies": ["frontend"],
+  "dependencies": ["http", "websocket_api"],
+  "documentation": "https://github.com/pierremonrocq/ha_budget_app",
+  "issue_tracker": "https://github.com/pierremonrocq/ha_budget_app/issues",
+  "integration_type": "hub",
+  "iot_class": "local_push",
+  "requirements": [],
+  "version": "0.1.0"
+}

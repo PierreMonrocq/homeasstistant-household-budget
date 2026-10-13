@@ -1,0 +1,77 @@
+# Example Household Budget helpers for the iOS companion app.
+#
+# A custom integration cannot ship an iOS widget: widgets are WidgetKit
+# extensions compiled into the companion app, and there is no third-party
+# plug-in point. So the setup is made of the app's own widget types plus the
+# two things below. The step-by-step (gauge templates, and the single
+# Shortcut that records an expense on any bucket) is in the README.
+#
+# Paste this into configuration.yaml, or into your scripts.yaml /
+# automations.yaml, then fix the one thing that depends on your own setup:
+#
+#   * entity ids follow the bucket name: a bucket called "Courses" gives
+#     sensor.courses_remaining / _spent / _used / _next_release and
+#     number.courses_limit. The bucket's device page lists them all.
+#   * REPLACE_WITH_YOUR_DEVICE: the name of your phone's notify action, as
+#     listed in Developer tools -> Actions under "notify" — for example
+#     notify.mobile_app_iphone_de_pierre.
+
+# Fixed-amount expenses, for the app's Scripts widget and for a Custom
+# widget's "Run script" tap action. A widget tap carries no input at all, so
+# a script is the only way to record something in one tap, and the amount has
+# to be baked in. For an amount you type, use the Shortcut instead.
+#
+# `add_expense` is targeted here by entity id rather than device id: both work
+# (every target form funnels through the same resolver, and a bucket's
+# entities all map back to the one bucket), but an entity id is still
+# readable when you reopen this file in six months.
+script:
+  budget_courses_20:
+    alias: Courses +20 €
+    icon: mdi:cart
+    mode: single
+    sequence:
+      - action: household_budget.add_expense
+        target:
+          entity_id: sensor.courses_remaining
+        data:
+          amount: 20
+
+  budget_lunch_12:
+    alias: Déjeuner +12 €
+    icon: mdi:food
+    mode: single
+    sequence:
+      - action: household_budget.add_expense
+        target:
+          entity_id: sensor.lunch_snack_remaining
+        data:
+          amount: 12
+          description: Déjeuner
+
+# Widgets are not pushed: iOS refreshes them on its own schedule, around
+# every 15 minutes at best. This asks for a reload at the two moments the
+# figures actually change — an expense being recorded, and local midnight,
+# when the sliding window moves and old expenses age out on their own.
+#
+# iOS decides whether to honour it, and manual reloads are rationed to
+# roughly 40-70 a day, so keep this list short rather than adding more
+# triggers.
+automation:
+  - id: budget_refresh_ios_widgets
+    alias: Budget - rafraîchir les widgets iOS
+    mode: queued
+    max: 10
+    triggers:
+      - trigger: event
+        event_type:
+          - household_budget_expense_added
+          - household_budget_expense_edited
+          - household_budget_expense_deleted
+      # Half a minute after the integration's own midnight recompute.
+      - trigger: time
+        at: "00:00:30"
+    actions:
+      - action: notify.REPLACE_WITH_YOUR_DEVICE
+        data:
+          message: update_widgets

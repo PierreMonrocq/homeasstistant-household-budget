@@ -1,0 +1,26 @@
+# Local Home Assistant instance for trying this integration out.
+#
+#   docker compose up -d       start it, then open http://localhost:8123
+#   docker compose restart     reload after editing Python
+#   docker compose logs -f     follow the logs
+#   docker compose down        stop it (the instance's data stays in dev/config)
+#
+# Never point this at a production Home Assistant: dev/config is its own
+# throwaway instance.
+
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: household-budget-dev
+    ports:
+      - "8123:8123"
+    volumes:
+      # The instance's own config and database, kept out of git.
+      - ./dev/config:/config
+      # The integration, live from the working tree. Read-only: Home
+      # Assistant never needs to write here, and it keeps the container from
+      # dropping __pycache__ into the repo.
+      - ./custom_components/household_budget:/config/custom_components/household_budget:ro
+    environment:
+      TZ: Europe/Paris
+    restart: unless-stopped
